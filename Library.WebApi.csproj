@@ -106,6 +106,7 @@
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\BorrowController.cs" />
     <Compile Include="Controllers\LendingRecordController.cs" />
+    <Compile Include="Controllers\RootController.cs" />
     <Compile Include="HealthController.cs" />
     <Compile Include="IoCSettings.cs" />
     <Compile Include="Program.cs" />

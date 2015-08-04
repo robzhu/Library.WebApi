@@ -6,10 +6,12 @@ namespace Library.WebApi
 {
     class Program
     {
+        internal static string RootUrl { get; private set; }
+
         static void Main( string[] args )
         {
             var url = "http://*:5000";
-            var fullUrl = url.Replace( "*", "localhost" );
+            RootUrl = url.Replace( "*", "localhost" );
             using( WebApp.Start( url ) )
             {
                 if( IsRunningOnMono() )
@@ -18,10 +20,10 @@ namespace Library.WebApi
                 }
                 else
                 {
-                    LaunchDocumentation( fullUrl );
+                    LaunchDocumentation( RootUrl );
                 }
 
-                Console.WriteLine( "Service started at {0}", fullUrl );
+                Console.WriteLine( "Service started at {0}", RootUrl );
                 Console.WriteLine( "Press ENTER to stop." );
                 Console.ReadLine();
             }
