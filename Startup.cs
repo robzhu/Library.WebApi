@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System.IO;
+using System.Reflection;
+using System.Web.Http;
 using HttpEx;
 using Owin;
 using Swashbuckle.Application;
@@ -20,10 +22,12 @@ namespace Library.WebApi
 
             config.Routes.MapHttpRoute( DefaultRouteName, "{controller}/{id}", defaults: new { controller = "Root", id = RouteParameter.Optional } );
             config.MapHttpAttributeRoutes();
- 
+
+            var execPath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
+
             config.EnableSwagger( c =>
             {
-                c.IncludeXmlComments( "docs.xml" );
+                c.IncludeXmlComments( execPath + "\\docs.xml" );
                 c.SingleApiVersion( "0.1", "REST API/MVC Demo: Public Library" );
             } ).EnableSwaggerUi();
  

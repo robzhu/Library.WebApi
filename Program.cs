@@ -12,11 +12,24 @@ namespace Library.WebApi
             var fullUrl = url.Replace( "*", "localhost" );
             using( WebApp.Start( url ) )
             {
+                if( IsRunningOnMono() )
+                {
+                    Console.WriteLine( "RUNNING ON MONO" );
+                }
+                else
+                {
+                    LaunchDocumentation( fullUrl );
+                }
+
                 Console.WriteLine( "Service started at {0}", fullUrl );
                 Console.WriteLine( "Press ENTER to stop." );
-                LaunchDocumentation( fullUrl );
                 Console.ReadLine();
             }
+        }
+
+        static bool IsRunningOnMono()
+        {
+            return Type.GetType( "Mono.Runtime" ) != null;
         }
 
         static void LaunchDocumentation( string url )
