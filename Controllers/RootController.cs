@@ -8,7 +8,7 @@ namespace Library.WebApi.Controllers
     {
         public IHttpActionResult Get()
         {
-            return Redirect( Program.RootUrl + "/swagger/ui/index" );
+            return Redirect( Request.RequestUri.AbsoluteUri + "swagger/ui/index" );
         }
     }
 }
