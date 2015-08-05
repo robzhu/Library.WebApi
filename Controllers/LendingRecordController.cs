@@ -8,6 +8,7 @@ using Library.DomainModel;
 
 namespace Library.WebApi
 {
+    [RoutePrefix( "LendingRecord" )]
     public class LendingRecordController : ApiController
     {
         private ILendingService LendingService { get; set; }
@@ -22,12 +23,12 @@ namespace Library.WebApi
         /// <summary>
         /// Gets all the lending records.
         /// </summary>
-        [HttpGet]
+        [HttpGet, Route( Name = "LendingRecord_GetAll" )]
         [ResponseType( typeof( ResourceCollection<LendingRecordResource> ) )]
-        public async Task<IHttpActionResult> GetAsync( string expand = null )
+        public async Task<IHttpActionResult> GetAllAsync( string expand = null )
         {
             IEnumerable<LendingRecord> records = await LendingService.GetAllRecordsAsync();
-            var resourceCollection = await RecordAssembler.ConvertToResourceCollectionAsync( this, records, expand );
+            var resourceCollection = await RecordAssembler.ConvertToResourceCollectionAsync( records, expand );
             return Ok( resourceCollection );
         }
 
@@ -35,14 +36,14 @@ namespace Library.WebApi
         /// Retrieves the lending record with the specified id.
         /// </summary>
         /// <param name="id">The id of the lending record to retrieve.</param>
-        [HttpGet]
+        [HttpGet, Route( "{id}", Name = "LendingRecord_GetById" )]
         [ResponseType( typeof( LendingRecordResource ) )]
-        public async Task<IHttpActionResult> GetAsync( string id, string expand = null )
+        public async Task<IHttpActionResult> GetByIdAsync( string id, string expand = null )
         {
             var record = await LendingService.GetByIdAsync( id );
             if( record == null ) return NotFound();
 
-            var resource = await RecordAssembler.ConvertToResourceAsync( this, record, expand );
+            var resource = await RecordAssembler.ConvertToResourceAsync( record, expand );
             return Ok( resource );
         }
     }

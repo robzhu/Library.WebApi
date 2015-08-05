@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Drum, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Drum.0.3.1\lib\net45\Drum.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -53,9 +57,11 @@
     <Compile Include="JsonUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="REST\Actionlink.cs" />
+    <Compile Include="REST\DrumUrlProvider.cs" />
     <Compile Include="REST\Hyperlink.cs" />
     <Compile Include="REST\ActionlinkConverter.cs" />
     <Compile Include="REST\HyperlinkConverter.cs" />
+    <Compile Include="REST\IUrlProvider.cs" />
     <Compile Include="REST\Resource.cs" />
     <Compile Include="REST\ResourceAssembler.cs" />
     <Compile Include="REST\ResourceCollection.cs" />

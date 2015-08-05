@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Web.Http;
 using HttpEx;
 using Library.DataTransferObjects;
 using Library.DomainModel;
@@ -16,59 +15,63 @@ namespace Library.WebApi
         
         LendingRecordResourceAssembler LendingRecordAssembler { get; set; }
 
-        public BookResourceAssembler( IBookService bookService, Lazy<AuthorResourceAssembler> authorAssemblerLazy, LendingRecordResourceAssembler lendingRecordAssembler )
+        public BookResourceAssembler( IBookService bookService, 
+                                      Lazy<AuthorResourceAssembler> authorAssemblerLazy, 
+                                      LendingRecordResourceAssembler lendingRecordAssembler, 
+                                      IUrlProvider urlProvider )
+            : base( urlProvider )
         {
             BookService = bookService;
             _authorAssemblerLazy = authorAssemblerLazy;
             LendingRecordAssembler = lendingRecordAssembler;
         }
 
-        public override async Task<BookResource> ConvertToResourceAsync( ApiController controller, Book model, ExpandQuery expand )
+        public override async Task<BookResource> ConvertToResourceAsync( Book model, ExpandQuery expand )
         {
             var resource = new BookResource();
 
-            resource.Href       = GetSingleResourceLink( controller, model.Id );
+            resource.Href       = GetSingleResourceLink( model.Id );
             resource.Title      = model.Title;
             resource.ISBN       = model.ISBN;
             resource.Published  = model.Published;
             resource.Condition  = model.Condition.ToString();
 
             if( expand.Contains( () => resource.Author ) ) {
-                resource.Author = await AuthorAssembler.GetResourceByIdAsync( controller, model.AuthorId );
+                resource.Author = await AuthorAssembler.GetResourceByIdAsync( model.AuthorId );
             }
             else {
-                resource.Author = controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<AuthorController>(), id = model.AuthorId } );
+                resource.Author = UrlProvider.UriStringFor<AuthorController>( c => c.GetByIdAsync( model.AuthorId, null ) );
             }
 
             if( !string.IsNullOrEmpty( model.LendingRecordId ) )
             {
                 if( expand.Contains( () => resource.LendingRecord ) ) {
-                    resource.LendingRecord = await LendingRecordAssembler.GetResourceByIdAsync( controller, model.LendingRecordId );
+                    resource.LendingRecord = await LendingRecordAssembler.GetResourceByIdAsync( model.LendingRecordId );
                 }
                 else {
-                    resource.LendingRecord = controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<LendingRecordController>(), id = model.LendingRecordId } );
+                    resource.LendingRecord = UrlProvider.UriStringFor<LendingRecordController>( c => c.GetByIdAsync( model.LendingRecordId, null ) );
                 }
             }
 
             if( model.IsAvailable ) {
-                resource.Checkout = controller.LinkTo( BorrowController.Route_Borrow_Checkout, new { bookId = model.Id } );
+                resource.Checkout = UrlProvider.UriStringFor<BorrowController>( c => c.CheckoutAsync( model.Id ) );
             }
             else {
-                resource.Checkin = controller.LinkTo( BorrowController.Route_Borrow_Checkin, new { bookId = model.Id } );
+                resource.Checkin = UrlProvider.UriStringFor<BorrowController>( c => c.CheckinAsync( model.Id ) );
             }
 
             return resource;
         }
 
-        public async Task<BookResource> GetResourceWithIdAsync( ApiController controller, string id )
+        public async Task<BookResource> GetResourceWithIdAsync( string id )
         {
             var model = await BookService.GetBookByIdAsync( id );
-            return await ConvertToResourceAsync( controller, model );
+            return await ConvertToResourceAsync( model );
         }
 
-        public string GetSingleResourceLink( ApiController controller, string modelId )
+        public string GetSingleResourceLink( string id )
         {
-            return controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<BookController>(), id = modelId } );
+            return UrlProvider.UriStringFor<BookController>( c => c.GetByIdAsync( id, null ) );
         }
     }
 }

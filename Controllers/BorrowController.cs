@@ -19,20 +19,18 @@ namespace Library.WebApi
             RecordAssembler = recordAssembler;
         }
 
-        public const string Route_Borrow_Checkout = "Route_Borrow_Checkout";
         /// <summary>
         /// Checks out the book with the specified id.
         /// </summary>
         /// <param name="bookId">The id of the book.</param>
-        [Route( "checkout/{bookId}", Name = Route_Borrow_Checkout )]
-        [HttpPost]
+        [HttpPost, Route( "checkout/{bookId}", Name = "Borrow_Checkout" )]
         [ResponseType( typeof( LendingRecordResource ) )]
         public async Task<IHttpActionResult> CheckoutAsync( string bookId )
         {
             try
             {
                 var lendingRecord = await LendingService.CheckoutAsync( bookId );
-                var resource = await RecordAssembler.ConvertToResourceAsync( this, lendingRecord );
+                var resource = await RecordAssembler.ConvertToResourceAsync( lendingRecord );
 
                 return CreatedAtRoute( Startup.DefaultRouteName, new { controller = "lendingRecord", id = lendingRecord.Id }, resource );
             }
@@ -46,20 +44,18 @@ namespace Library.WebApi
             }
         }
 
-        public const string Route_Borrow_Checkin = "Route_Borrow_Checkin";
         /// <summary>
         /// Checks in the book with the specified id.
         /// </summary>
         /// <param name="bookId">The id of the book.</param>
-        [Route( "checkin/{bookId}", Name = Route_Borrow_Checkin )]
-        [HttpPost]
+        [HttpPost, Route( "checkin/{bookId}", Name = "Borrow_Checkin" )]
         [ResponseType( typeof( LendingRecordResource ) )]
         public async Task<IHttpActionResult> CheckinAsync( string bookId )
         {
             try
             {
                 var lendingRecord = await LendingService.CheckinAsync( bookId );
-                var resource = await RecordAssembler.ConvertToResourceAsync( this, lendingRecord );
+                var resource = await RecordAssembler.ConvertToResourceAsync( lendingRecord );
 
                 return Ok( resource );
             }

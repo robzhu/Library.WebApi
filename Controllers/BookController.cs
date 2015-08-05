@@ -23,11 +23,12 @@ namespace Library.WebApi
         /// <summary>
         /// Retrieves all books.
         /// </summary>
+        [Route( Name = "Book_GetAll" )]
         [ResponseType( typeof( IEnumerable<BookResource> ) )]
-        public async Task<IHttpActionResult> GetAsync( string expand = null )
+        public async Task<IHttpActionResult> GetAllAsync( string expand = null )
         {
             IEnumerable<Book> books = await BookService.GetAllBooksAsync();
-            var resourceCollection = await BookAssembler.ConvertToResourceCollectionAsync( this, books, expand );
+            var resourceCollection = await BookAssembler.ConvertToResourceCollectionAsync( books, expand );
             return Ok( resourceCollection );
         }
 
@@ -35,28 +36,28 @@ namespace Library.WebApi
         /// Retrieves the book with the specified id.
         /// </summary>
         /// <param name="id">The Id of the book to retrieve.</param>
+        [Route( "{id}", Name = "Book_GetById" )]
         [ResponseType( typeof( BookResource ) )]
-        public async Task<IHttpActionResult> GetAsync( string id, string expand = null )
+        public async Task<IHttpActionResult> GetByIdAsync( string id, string expand = null )
         {
             Book book = await BookService.GetBookByIdAsync( id );
             if( book == null ) return NotFound();
 
-            var resource = await BookAssembler.ConvertToResourceAsync( this, book, expand );
+            var resource = await BookAssembler.ConvertToResourceAsync( book, expand );
             return Ok( resource );
         }
 
-        public const string Route_Book_GetByAuthorId = "Route_Book_GetByAuthorId";
         /// <summary>
         /// Retrieves all the books written by a specific author
         /// </summary>
         /// <param name="authorId">The Id of the author.</param>
-        /// <param name="expand"></param>
+        /// <param name="expand">The child resources that should be expanded</param>
+        [Route( "ByAuthor/{authorId}", Name = "Book_GetByAuthorId" )]
         [ResponseType( typeof( ResourceCollection<BookResource> ) )]
-        [Route( "ByAuthor/{authorId}", Name = Route_Book_GetByAuthorId )]
         public async Task<IHttpActionResult> GetByAuthorIdAsync( string authorId, string expand = null )
         {
             IEnumerable<Book> books = await BookService.GetBooksByAuthorIdAsync( authorId );
-            var resourceCollection = await BookAssembler.ConvertToResourceCollectionAsync( this, books, expand );
+            var resourceCollection = await BookAssembler.ConvertToResourceCollectionAsync( books, expand );
             resourceCollection.Href = Request.RequestUri.ToString();
 
             return Ok( resourceCollection );
@@ -67,7 +68,7 @@ namespace Library.WebApi
         /// </summary>
         /// <param name="isbn">The ISBN of the book to add.</param>
         /// <returns>The book that was added.</returns>
-        [HttpPost]
+        [HttpPost, Route( Name = "Book_AddByIsbn" )]
         [ResponseType( typeof( BookResource ) )]
         public async Task<IHttpActionResult> AddBookAsync( string isbn )
         {
@@ -75,7 +76,7 @@ namespace Library.WebApi
 
             if( book == null ) return BadRequest( "the provided ISBN does not resolve to a book in our backend service" );
 
-            var resource = await BookAssembler.ConvertToResourceAsync( this, book );
+            var resource = await BookAssembler.ConvertToResourceAsync( book );
             return CreatedAtRoute( "api", new { id = book.Id }, resource );
         }
     }

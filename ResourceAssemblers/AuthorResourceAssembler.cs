@@ -14,7 +14,6 @@ namespace Library.WebApi
         IAuthorService AuthorService { get; set; }
         IBookService BookService { get; set; }
         Lazy<BookResourceAssembler> LazyBookAssembler;
-        IUrlProvider UrlProvider;
 
         BookResourceAssembler BookAssembler 
         {
@@ -22,14 +21,14 @@ namespace Library.WebApi
         }
 
         public AuthorResourceAssembler( IAuthorService authorService, IBookService bookService, Lazy<BookResourceAssembler> assemblerLazy, IUrlProvider urlProvider )
+            : base( urlProvider )
         {
             AuthorService = authorService;
             BookService = bookService;
             LazyBookAssembler = assemblerLazy;
-            UrlProvider = urlProvider;
         }
 
-        public override async Task<AuthorResource> ConvertToResourceAsync( ApiController controller, Author model, ExpandQuery expand )
+        public override async Task<AuthorResource> ConvertToResourceAsync( Author model, ExpandQuery expand )
         {
             var resource = new AuthorResource();
 
@@ -41,7 +40,7 @@ namespace Library.WebApi
             if( expand.Contains( () => resource.Books ) )
             {
                 var books = await BookService.GetBooksByIdsAsync( model.BookIds.ToArray() );
-                booksCollection = await BookAssembler.ConvertToResourceEnumerableAsync( controller, books );
+                booksCollection = await BookAssembler.ConvertToResourceEnumerableAsync( books );
             }
             else
             {
@@ -49,7 +48,7 @@ namespace Library.WebApi
                 var linksCollection = new List<Hyperlink<BookResource>>();
                 foreach( var bookId in model.BookIds )
                 {
-                    string href = BookAssembler.GetSingleResourceLink( controller, bookId );
+                    string href = BookAssembler.GetSingleResourceLink( bookId );
                     linksCollection.Add( href );
                 }
                 booksCollection = linksCollection;
@@ -59,12 +58,12 @@ namespace Library.WebApi
             return resource;
         }
 
-        internal async Task<AuthorResource> GetResourceByIdAsync( ApiController controller, string id )
+        internal async Task<AuthorResource> GetResourceByIdAsync( string id )
         {
             Author author = await AuthorService.GetAuthorByIdAsync( id );
             if( author == null ) return null;
 
-            return await ConvertToResourceAsync( controller, author );
+            return await ConvertToResourceAsync( author );
         }
     }
 }

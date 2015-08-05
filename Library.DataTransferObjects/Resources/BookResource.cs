@@ -1,5 +1,6 @@
 ﻿using System;
 using HttpEx.REST;
+using Newtonsoft.Json;
 
 namespace Library.DataTransferObjects
 {
@@ -20,7 +21,10 @@ namespace Library.DataTransferObjects
         public string Condition { get; set; }
         public Hyperlink<LendingRecordResource> LendingRecord { get; set; }
 
+        [JsonProperty( NullValueHandling = NullValueHandling.Ignore )]
         public Actionlink Checkout { get; set; }
+
+        [JsonProperty( NullValueHandling = NullValueHandling.Ignore )]
         public Actionlink Checkin { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using Library.DomainModel;
 
 namespace Library.WebApi
 {
-    [RoutePrefix("Author")]
+    [RoutePrefix( "Author" )]
     public class AuthorController : ApiController
     {
         private IAuthorService AuthorService { get; set; }
@@ -29,7 +29,7 @@ namespace Library.WebApi
         {
             IEnumerable<Author> authors = await AuthorService.GetAllAuthorsAsync();
 
-            var resourceCollection = await AuthorAssembler.ConvertToResourceCollectionAsync( this, authors, expand );
+            var resourceCollection = await AuthorAssembler.ConvertToResourceCollectionAsync( authors, expand );
             return Ok( resourceCollection );
         }
 
@@ -43,7 +43,7 @@ namespace Library.WebApi
             var author = await AuthorService.GetAuthorByIdAsync( id );
             if( author == null ) return NotFound();
 
-            var resource = await AuthorAssembler.ConvertToResourceAsync( this, author, expand );
+            var resource = await AuthorAssembler.ConvertToResourceAsync( author, expand );
             return Ok( resource );
         }
     }

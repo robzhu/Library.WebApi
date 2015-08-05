@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using Drum;
 
-namespace Library.WebApi
+namespace HttpEx
 {
     public class DrumUrlProvider : IUrlProvider
     {
@@ -26,6 +26,11 @@ namespace Library.WebApi
         public string UriStringFor<TController>( Expression<Action<TController>> action )
         {
             return UriFor<TController>( action ).ToString();
+        }
+
+        public string GetRequestUri()
+        {
+            return _request.RequestUri.ToString();
         }
     }
 }

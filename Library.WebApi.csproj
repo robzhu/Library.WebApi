@@ -119,8 +119,6 @@
     <Compile Include="ResourceAssemblers\LendingRecordResourceAssembler.cs" />
     <Compile Include="ResourceAssemblers\BookResourceAssembler.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Utilities\DrumUrlProvider.cs" />
-    <Compile Include="Utilities\IUrlProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

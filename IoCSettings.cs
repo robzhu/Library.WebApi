@@ -5,6 +5,7 @@ using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
 using Drum;
+using HttpEx;
 using Library.DomainModel;
 using Library.DomainModel.Storage;
 using Library.DomainServices;
@@ -48,8 +49,6 @@ namespace Library.WebApi
             builder.RegisterHttpRequestMessage( config );
             builder.RegisterGeneric( typeof( UriMaker<> ) ).AsSelf().InstancePerRequest();
 
-            //IUrlProvider drumProvider = new DrumUrlProvider( uriMakerContext, requestProvider );
-            //builder.RegisterInstance( drumProvider ).As<IUrlProvider>();
             builder.RegisterType<DrumUrlProvider>().As<IUrlProvider>();
         }
 
@@ -57,6 +56,7 @@ namespace Library.WebApi
         {
             builder.RegisterType<BookService>().As<IBookService>();
             builder.RegisterType<AuthorService>().As<IAuthorService>();
+            builder.RegisterType<LendingService>().As<ILendingService>();
 
             builder.RegisterType<BookResourceAssembler>().AsSelf().PropertiesAutowired( PropertyWiringOptions.AllowCircularDependencies );
             builder.RegisterType<AuthorResourceAssembler>().AsSelf().PropertiesAutowired( PropertyWiringOptions.AllowCircularDependencies );

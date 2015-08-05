@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Web.Http;
 using HttpEx;
 using Library.DataTransferObjects;
 using Library.DomainModel;
@@ -15,18 +14,19 @@ namespace Library.WebApi
         ILendingRecordStore LendingRecordStore { get; set; }
         IBookService BookService { get; set; }
 
-        public LendingRecordResourceAssembler( Lazy<BookResourceAssembler> assemblerLazy, ILendingRecordStore lendingRecordStore, IBookService bookService )
+        public LendingRecordResourceAssembler( Lazy<BookResourceAssembler> assemblerLazy, ILendingRecordStore lendingRecordStore, IBookService bookService, IUrlProvider urlProvider ) 
+            : base( urlProvider )
         {
             _assemblerLazy = assemblerLazy;
             LendingRecordStore = lendingRecordStore;
             BookService = bookService;
         }
 
-        public override async Task<LendingRecordResource> ConvertToResourceAsync( ApiController controller, LendingRecord model, ExpandQuery expand )
+        public override async Task<LendingRecordResource> ConvertToResourceAsync( LendingRecord model, ExpandQuery expand )
         {
             var resource = new LendingRecordResource();
 
-            resource.Href           = controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<LendingRecordController>(), id = model.Id } );
+            resource.Href           = UrlProvider.UriStringFor<LendingRecordController>( c => c.GetByIdAsync( model.Id, expand.Value ) );
             resource.CheckoutDate   = model.CheckoutDate;
             resource.DueDate        = model.DueDate;
             resource.ReturnedDate   = model.ReturnedDate;
@@ -36,19 +36,19 @@ namespace Library.WebApi
 
             if( expand.Contains( () => resource.Book ) ) {
                 var book = await BookService.GetBookByIdAsync( model.BookId );
-                resource.Book = await BookAssembler.ConvertToResourceAsync( controller, book );
+                resource.Book = await BookAssembler.ConvertToResourceAsync(  book );
             }
             else {
-                resource.Book = controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<BookController>(), id = model.BookId } );
+                resource.Book = UrlProvider.UriStringFor<BookController>( c => c.GetByIdAsync( model.BookId, null ) );
             }
 
             return resource;
         }
 
-        internal async Task<LendingRecordResource> GetResourceByIdAsync( ApiController controller, string id )
+        internal async Task<LendingRecordResource> GetResourceByIdAsync( string id )
         {
             var record = await LendingRecordStore.GetByIdAsync( id );
-            return await ConvertToResourceAsync( controller, record );
+            return await ConvertToResourceAsync( record );
         }
     }
 }
