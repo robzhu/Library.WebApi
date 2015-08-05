@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http;
-using HttpEx;
 using HttpEx.REST;
 
 namespace HttpEx
@@ -10,11 +7,7 @@ namespace HttpEx
     /// <summary>
     /// Resources assemblers a responsible for creating resource representations of business domain entities
     /// </summary>
-    public abstract class ResourceAssembler
-    {
-    }
-
-    public abstract class ResourceAssembler<TModel, TResource> : ResourceAssembler where TResource : IResource
+    public abstract class ResourceAssembler<TModel, TResource> where TResource : IResource
     {
         protected IUrlProvider UrlProvider { get; private set; }
 
