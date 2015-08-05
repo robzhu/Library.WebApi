@@ -27,7 +27,7 @@ namespace HttpEx
             get { return _default; }
         }
 
-        private string Value { get; set; }
+        public string Value { get; private set; }
 
         public ExpandQuery( string value )
         {

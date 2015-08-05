@@ -8,6 +8,7 @@ using Library.DomainModel;
 
 namespace Library.WebApi
 {
+    [RoutePrefix("Author")]
     public class AuthorController : ApiController
     {
         private IAuthorService AuthorService { get; set; }
@@ -22,8 +23,9 @@ namespace Library.WebApi
         /// <summary>
         /// Retrieves all the authors in the system.
         /// </summary>
+        [Route( Name = "Author_GetAll" )]
         [ResponseType( typeof( ResourceCollection<AuthorResource> ) )]
-        public async Task<IHttpActionResult> GetAsync( string expand = null )
+        public async Task<IHttpActionResult> GetAllAsync( string expand = null )
         {
             IEnumerable<Author> authors = await AuthorService.GetAllAuthorsAsync();
 
@@ -34,8 +36,9 @@ namespace Library.WebApi
         /// <summary>
         /// Retrieves the author with the specified id.
         /// </summary>
+        [Route( "{id}", Name = "Author_GetByIdAsync" )]
         [ResponseType( typeof( AuthorResource ) )]
-        public async Task<IHttpActionResult> GetAsync( string id, string expand = null )
+        public async Task<IHttpActionResult> GetByIdAsync( string id, string expand = null )
         {
             var author = await AuthorService.GetAuthorByIdAsync( id );
             if( author == null ) return NotFound();

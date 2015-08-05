@@ -12,6 +12,11 @@ namespace Library.DomainModel.Storage
     {
         private IAuthorStore AuthorStore { get; set; }
 
+        public AuthorRepository( IAuthorStore authorStore )
+        {
+            AuthorStore = authorStore;
+        }
+
         public async Task<Author> CreateOrGetByNameAsync( string name )
         {
             Author existingAuthor = await AuthorStore.GetByFullNameAsync( name );

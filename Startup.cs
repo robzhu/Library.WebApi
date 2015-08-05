@@ -21,7 +21,7 @@ namespace Library.WebApi
             config.ConfigureJsonMediaTypeFormatter();
 
             config.Routes.MapHttpRoute( DefaultRouteName, "{controller}/{id}", defaults: new { controller = "Root", id = RouteParameter.Optional } );
-            config.MapHttpAttributeRoutes();
+            //config.MapHttpAttributeRoutes();
 
             var execPath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
 
@@ -29,7 +29,10 @@ namespace Library.WebApi
             {
                 c.IncludeXmlComments( execPath + "\\docs.xml" );
                 c.SingleApiVersion( "0.1", "REST API/MVC Demo: Public Library" );
-            } ).EnableSwaggerUi();
+            } ).EnableSwaggerUi( c =>
+            {
+                c.DisableValidator();
+            } );
  
             app.UseWebApi( config );
         }

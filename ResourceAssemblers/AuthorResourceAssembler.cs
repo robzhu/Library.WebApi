@@ -14,24 +14,26 @@ namespace Library.WebApi
         IAuthorService AuthorService { get; set; }
         IBookService BookService { get; set; }
         Lazy<BookResourceAssembler> LazyBookAssembler;
+        IUrlProvider UrlProvider;
 
         BookResourceAssembler BookAssembler 
         {
             get { return LazyBookAssembler.Value; }
         }
 
-        public AuthorResourceAssembler( IAuthorService authorService, IBookService bookService, Lazy<BookResourceAssembler> assemblerLazy )
+        public AuthorResourceAssembler( IAuthorService authorService, IBookService bookService, Lazy<BookResourceAssembler> assemblerLazy, IUrlProvider urlProvider )
         {
             AuthorService = authorService;
             BookService = bookService;
             LazyBookAssembler = assemblerLazy;
+            UrlProvider = urlProvider;
         }
 
         public override async Task<AuthorResource> ConvertToResourceAsync( ApiController controller, Author model, ExpandQuery expand )
         {
             var resource = new AuthorResource();
 
-            resource.Href       = controller.LinkTo( DefaultRouteName, new { controller = GetPrefix<AuthorController>(), id = model.Id } );
+            resource.Href       = UrlProvider.UriStringFor<AuthorController>( c => c.GetByIdAsync( model.Id, expand.Value ) );
             resource.FirstName  = model.FirstName;
             resource.LastName   = model.LastName;
 
@@ -52,7 +54,6 @@ namespace Library.WebApi
                 }
                 booksCollection = linksCollection;
             }
-            //booksCollection.Href = controller.LinkTo( BookController.Route_Book_GetByAuthorId, new { authorId = model.Id } );
             resource.Books = booksCollection;
 
             return resource;

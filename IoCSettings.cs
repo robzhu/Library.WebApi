@@ -1,7 +1,10 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
+using Drum;
 using Library.DomainModel;
 using Library.DomainModel.Storage;
 using Library.DomainServices;
@@ -15,20 +18,39 @@ namespace Library.WebApi
     {
         internal static void Configure( IAppBuilder app, HttpConfiguration config )
         {
+            IContainer container = null;
             var builder = new ContainerBuilder();
 
             builder.RegisterApiControllers( Assembly.GetExecutingAssembly() ).InstancePerRequest();
             builder.RegisterWebApiFilterProvider( config );
 
-            //register type specific shit here
             RegisterTypes( builder );
+            RegisterDrum( config, builder, () =>
+                {
+                    return container.Resolve<HttpRequestMessage>();
+                } );
 
-            var container = builder.Build();
+            container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver( container );
 
             app.UseAutofacMiddleware( container );
             app.UseAutofacWebApi( config );
             app.UseWebApi( config );
+
+            //config.DependencyResolver.
+        }
+
+        private static void RegisterDrum( HttpConfiguration config, ContainerBuilder builder, Func<HttpRequestMessage> requestProvider )
+        {
+            // Web API routes
+            UriMakerContext uriMakerContext = config.MapHttpAttributeRoutesAndUseUriMaker();
+            builder.RegisterInstance( uriMakerContext ).ExternallyOwned();
+            builder.RegisterHttpRequestMessage( config );
+            builder.RegisterGeneric( typeof( UriMaker<> ) ).AsSelf().InstancePerRequest();
+
+            //IUrlProvider drumProvider = new DrumUrlProvider( uriMakerContext, requestProvider );
+            //builder.RegisterInstance( drumProvider ).As<IUrlProvider>();
+            builder.RegisterType<DrumUrlProvider>().As<IUrlProvider>();
         }
 
         private static void RegisterTypes( ContainerBuilder builder )
