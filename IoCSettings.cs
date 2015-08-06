@@ -26,10 +26,7 @@ namespace Library.WebApi
             builder.RegisterWebApiFilterProvider( config );
 
             RegisterTypes( builder );
-            RegisterDrum( config, builder, () =>
-                {
-                    return container.Resolve<HttpRequestMessage>();
-                } );
+            RegisterDrum( config, builder );
 
             container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver( container );
@@ -37,11 +34,9 @@ namespace Library.WebApi
             app.UseAutofacMiddleware( container );
             app.UseAutofacWebApi( config );
             app.UseWebApi( config );
-
-            //config.DependencyResolver.
         }
 
-        private static void RegisterDrum( HttpConfiguration config, ContainerBuilder builder, Func<HttpRequestMessage> requestProvider )
+        private static void RegisterDrum( HttpConfiguration config, ContainerBuilder builder )
         {
             // Web API routes
             UriMakerContext uriMakerContext = config.MapHttpAttributeRoutesAndUseUriMaker();
