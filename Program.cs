@@ -6,6 +6,8 @@ namespace Library.WebApi
 {
     class Program
     {
+        public const string Version = "0.01";
+
         internal static string RootUrl { get; private set; }
 
         static void Main( string[] args )
