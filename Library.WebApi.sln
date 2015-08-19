@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.WebApi", "Library.WebApi.csproj", "{1AE13956-361E-4038-AF32-E92940FE21A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.WebApi", "Library.WebApi\Library.WebApi.csproj", "{1AE13956-361E-4038-AF32-E92940FE21A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.DomainModel", "Library.DomainModel\Library.DomainModel.csproj", "{2D5F8953-E648-4672-8C72-E88C2DA29D7C}"
 EndProject
