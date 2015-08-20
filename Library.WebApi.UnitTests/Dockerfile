@@ -1,11 +1,14 @@
 FROM mono
 
-RUN mkdir /usr/library.webapi
-ADD . /usr/library.webapi
-WORKDIR /usr/library.webapi
+ENV rootDir /usr/library.webapi
 
+RUN mkdir $rootDir
+ADD . $rootDir
+WORKDIR ${rootDir}
+
+RUN apt-get update
+RUN apt-get install nunit-console
 RUN nuget restore
-RUN nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 RUN xbuild
 
-ENTRYPOINT [ "mono", "/usr/library.webapi/testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe /usr/library.webapi/Library.WebApi.UnitTests/bin/Release/Library.WebApi.UnitTests.dll" ]
+ENTRYPOINT [ "nunit-console", "/usr/library.webapi/Library.WebApi.UnitTests/bin/Debug/Library.WebApi.UnitTests.dll" ]
