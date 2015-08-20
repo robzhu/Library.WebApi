@@ -5,7 +5,13 @@ machine:
 dependencies:
   override:
     - docker info
-    - ls -l
-    - cp Library.WebApi/Dockerfile .
-    - docker build -t robzhu/library.standalone .
+#    - ls -l
+#    - cp Library.WebApi/Dockerfile .
+#    - docker build -t robzhu/library.standalone .
 
+test:
+  override:
+    - cp Library.WebApi.UnitTests/Dockerfile .
+    - ls -l
+    - docker build -t library.webapi.tests .
+    - docker run -it library.webapi.tests
