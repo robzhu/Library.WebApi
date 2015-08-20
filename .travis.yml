@@ -8,3 +8,5 @@ install:
 script:
   - xbuild /p:Configuration=Release Library.WebApi.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Library.WebApi.UnitTests/bin/Release/Library.WebApi.UnitTests.dll
+  - ./run 'cp Library.WebApi\Dockerfile .'
+  - ./run 'docker build -t robzhu/Library.WebApi .'
