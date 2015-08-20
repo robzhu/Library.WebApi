@@ -1,12 +1,12 @@
 sudo: required
 
+services: 
+  - docker
+
 language: csharp
 solution: Library.WebApi.sln
 mono:
   - latest
-
-services: 
-  - docker
 
 install:
   - nuget restore Library.WebApi.sln
