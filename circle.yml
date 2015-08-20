@@ -21,6 +21,6 @@ deployment:
     branch: master
     commands:
       - cp Library.WebApi/Dockerfile .
-      - docker build -t robzhu/Library.WebApi .
+      - docker build -t robzhu/Library.standalone .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push robzhu/Library.WebApi
+      - docker push robzhu/library.standalone
