@@ -9,4 +9,4 @@ WORKDIR /usr/library.webapi
 RUN nuget restore
 RUN xbuild
 
-CMD [ "mono", "bin/Debug/Library.WebApi.exe" ]
+CMD [ "mono", "Library.WebApi/bin/Debug/Library.WebApi.exe" ]
