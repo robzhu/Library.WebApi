@@ -15,3 +15,12 @@ test:
     - ls -l
     - docker build -t library.webapi.tests .
     - docker run -it library.webapi.tests
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - cp Library.WebApi/Dockerfile .
+      - docker build -t robzhu/Library.WebApi .
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push robzhu/Library.WebApi
