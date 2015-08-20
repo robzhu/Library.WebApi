@@ -1,0 +1,10 @@
+language: csharp
+solution: Library.WebApi.sln
+mono:
+  - latest
+install:
+  - nuget restore Library.WebApi.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release Library.WebApi.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Library.WebApi.UnitTests/bin/Release/Library.WebApi.UnitTests.dll
