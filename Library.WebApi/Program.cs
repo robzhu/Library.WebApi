@@ -4,9 +4,9 @@ using Microsoft.Owin.Hosting;
 
 namespace Library.WebApi
 {
-    class Program
+    class Service
     {
-        public const string Version = "0.01";
+        public const string Version = "0.02";
 
         internal static string RootUrl { get; private set; }
 
