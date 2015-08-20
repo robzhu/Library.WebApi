@@ -8,4 +8,4 @@ RUN nuget restore
 RUN nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 RUN xbuild
 
-ENTRYPOINT [ "mono", "./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Library.WebApi.UnitTests/bin/Release/Library.WebApi.UnitTests.dll" ]
+ENTRYPOINT [ "mono", "/usr/library.webapi/testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe /usr/library.webapi/Library.WebApi.UnitTests/bin/Release/Library.WebApi.UnitTests.dll" ]
