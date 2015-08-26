@@ -5,9 +5,6 @@ machine:
 dependencies:
   override:
     - docker info
-#    - ls -l
-#    - cp Library.WebApi/Dockerfile .
-#    - docker build -t robzhu/library.standalone .
 
 test:
   override:
