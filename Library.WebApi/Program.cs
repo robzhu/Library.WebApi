@@ -1,33 +1,35 @@
 ﻿using System;
 using System.Diagnostics;
+using System.ServiceProcess;
+using System.Threading;
 using Microsoft.Owin.Hosting;
 
 namespace Library.WebApi
 {
-    class Service
+    class Program
     {
-        public const string Version = "0.02";
-
-        internal static string RootUrl { get; private set; }
+        public static Options Options { get; private set; }
 
         static void Main( string[] args )
         {
-            var url = "http://*:5000";
-            RootUrl = url.Replace( "*", "localhost" );
-            using( WebApp.Start( url ) )
-            {
-                if( IsRunningOnMono() )
-                {
-                    Console.WriteLine( "RUNNING ON MONO" );
-                }
-                else
-                {
-                    LaunchDocumentation( RootUrl );
-                }
+            Options = Library.WebApi.Options.Parse( args );
 
-                Console.WriteLine( "Service started at {0}", RootUrl );
-                Console.WriteLine( "Press ENTER to stop." );
-                Console.ReadLine();
+            if( IsRunningOnMono() )
+            {
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[] 
+                { 
+                    new Service()
+                };
+                ServiceBase.Run( ServicesToRun );
+            }
+            else
+            {
+                //so we don't have to bother installing/uninstalling services on windows
+                Service svc = new Service();
+                svc.OnDebug();
+                LaunchDocumentation( Program.Options.RootUrl );
+                Thread.Sleep( Timeout.Infinite );
             }
         }
 
